@@ -43,7 +43,7 @@ const TrendsPage = () => {
           {[...labels].reverse().map((ingredient, idx) => (
             <li
               key={ingredient}
-              style={{ ['--bullet-color' as string]: ingredientColor[idx] }}
+              style={{ ['--bullet-color' as string]: [...ingredientColor].reverse()[idx] }}
               className="text-black marker:[color:var(--bullet-color)]"
             >
               {ingredient} (<span>{[...frequencies].reverse()[idx]}</span>)
