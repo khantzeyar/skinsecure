@@ -16,7 +16,7 @@ const Navbar = () => {
   const pathname = usePathname()
 
   return (
-    <nav className='fixed top-0 w-full flex items-center justify-between
+    <nav className='fixed top-0 w-full flex items-center justify-between z-50
     py-3 px-8 border-b border-gray-300 bg-white'>
         {/* Logo */}
         <Image src="/skinsecure.svg" alt="Logo" 
