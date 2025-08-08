@@ -1,3 +1,9 @@
+/** 
+ * The trends regarding banned substances will be displayed on this page
+ * - A bar chart is shown, highlighting the frequencies of the most banned products.
+ * - Bullet points will be given on the right to show the ingredient and their respective frequency.
+*/
+
 "use client";
 import 'chart.js/auto';
 import dynamic from 'next/dynamic';
@@ -7,6 +13,7 @@ const Bar = dynamic(() => import('react-chartjs-2').then((mod) => mod.Bar), {
   ssr: false,
 });
 
+// Bar Chart information
 const labels = ['Ingredient 5', 'Ingredient 4', 'Ingredient 3', 'Ingredient 2', 'Ingredient 1'];
 const frequencies = [40, 50, 60, 70, 80];
 const ingredientColor = [
@@ -16,6 +23,7 @@ const ingredientColor = [
       'rgb(75, 192, 192)',
       'rgb(54, 162, 235)',
 ];
+// Lowers the opacity of the ingredient color for the bar color.
 const backgroundColor = ingredientColor.map(rgb =>
   rgb.replace('rgb', 'rgba').replace(')', ', 0.2)')
 );
@@ -40,9 +48,10 @@ const TrendsPage = () => {
           <Bar data={data} options={{ responsive: true, maintainAspectRatio: false }} />
         </div>
         <ul className="list-disc ml-6 text-lg">
-          {[...labels].reverse().map((ingredient, idx) => (
+          {[...labels].reverse().map((ingredient, idx) => ( // Display the ingredients in reverse order
             <li
               key={ingredient}
+              // Assign the associated ingredient color to the respective bullet 
               style={{ ['--bullet-color' as string]: [...ingredientColor].reverse()[idx] }}
               className="text-black marker:[color:var(--bullet-color)]"
             >

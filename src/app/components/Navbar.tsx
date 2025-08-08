@@ -1,3 +1,10 @@
+/** 
+ * This is the main nav bar for our website.
+ * - The logo will be displayed on the left
+ * - The navigation links ("Products" and "Trends") will be on the left.
+ * - The current page will have its link highlighted with a black background and white text.
+*/
+
 "use client";
 
 import Link from 'next/link'
@@ -11,9 +18,11 @@ const Navbar = () => {
   return (
     <nav className='fixed top-0 w-full flex items-center justify-between
     py-3 px-8 border-b border-gray-300 bg-white'>
+        {/* Logo */}
         <Image src="/skinsecure.svg" alt="Logo" 
         width={430} height={147} style={{ height: '100px', width: 'auto'}}/>
-        <ul className='flex text-lg mr-10'>
+        {/* Navigation Links */}
+        <ul className='flex text-lg mr-10'> 
             <li>
               <Link href="/">
                 <span className={`inline-block px-4 py-2 rounded w-32 text-center
