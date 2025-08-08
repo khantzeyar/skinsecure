@@ -6,9 +6,9 @@ import React from 'react'
 
 const ApprovedProduct = () => {
   return (
-    // Card Header : APPROVED
     <div className='flex flex-col items-center w-70 h-77 
     border shadow-md rounded border-gray-200 overflow-hidden'> 
+        {/* Header */}
         <div className='w-full flex flex-col items-center py-1' style={{ backgroundColor: '#2E7D32' }}>
             <h1 className='font-extrabold text-white'>APPROVED</h1>
         </div>
@@ -21,7 +21,7 @@ const ApprovedProduct = () => {
                 The product is safe from any harmful ingredients!
             </h1>
             {/* Similar Products Button */}
-            <div className="flex justify-center">
+            <div className="flex justify-center mt-2">
                 <button className="text-blue-500 cursor-pointer text-[14px]"> 
                     Similar Products 
                 </button>
