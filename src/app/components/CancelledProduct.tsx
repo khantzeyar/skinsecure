@@ -29,7 +29,7 @@ const CancelledProduct = () => {
                 <li>Ingredient 4</li>
                 <li>Ingredient 5</li>
             </ul>
-            <HelpOutlineIcon className="text-gray-400 ml-2 cursor-pointer" fontSize="large" />
+            <HelpOutlineIcon className="text-gray-300 ml-2 cursor-pointer" fontSize="large" />
             </div>
             {/* Similar Products Button */}
             <div className="flex justify-center">
