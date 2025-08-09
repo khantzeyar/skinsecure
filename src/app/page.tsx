@@ -2,6 +2,7 @@
  * The products will be displayed on this page.
  * - A grid showing a list of banned and approved products will be displayd
  * - The buttons below will allow you to toggle between the pages of the list.
+ * - Options for filtering the products will be given on the left.
 */
 "use client";
 
@@ -110,10 +111,9 @@ export default function Home() {
             ))}
             {ingredients.length > 5 && (
               <button
-                className="flex items-center gap-1 mt-2 text-blue-500 text-sm cursor-pointer relative right-0.5"
+                className="flex items-center gap-1 mt-2 text-blue-500 text-sm cursor-pointer relative right-1"
                 onClick={() => setShowAll(!showAll)}
-                type="button"
-              >
+                type="button">
                 {showAll ? (
                   <>
                     <KeyboardArrowUp fontSize="small" className="text-black" />
