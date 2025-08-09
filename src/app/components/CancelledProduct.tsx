@@ -8,8 +8,9 @@ import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 
 const CancelledProduct = () => {
   return (
-    <div className='flex flex-col justify-between items-center w-70 h-77 
-    border shadow-md rounded border-gray-200 overflow-hidden'> 
+    <div className="flex flex-col justify-between items-center w-full max-w-[280px] h-77 
+    border shadow-md rounded border-gray-200 overflow-hidden
+    will-change-transform will-change-width">
         <div className="w-full">
             {/* Header */}
             <div className='w-full flex flex-col items-center py-1' style={{ backgroundColor: '#D50000' }}>
