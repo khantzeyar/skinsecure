@@ -1,6 +1,5 @@
 /** 
  * This component is used to represent the approved products in the dataset.
- * - TO BE IMPLEMENTED: Similar products button
  */
 
 import React from 'react';
@@ -15,9 +14,10 @@ interface ApprovedProductCard {
 const ApprovedProduct: React.FC<ApprovedProductCard> = ({ product }) => {
   return (
     <div
-      className="flex flex-col justify-between items-center w-full max-w-[280px] h-77 
+      className="flex flex-col items-center w-full max-w-[280px] h-77 
       border shadow-md rounded border-gray-200 overflow-hidden
-      will-change-transform will-change-width">
+      will-change-transform will-change-width"
+    >
       {/* Header */}
       <div className='w-full flex flex-col items-center py-1' style={{ backgroundColor: '#2E7D32' }}>
         <h1 className='font-extrabold text-white'>APPROVED</h1>
@@ -30,18 +30,11 @@ const ApprovedProduct: React.FC<ApprovedProductCard> = ({ product }) => {
       </div>
 
       {/* Divider and Message */}
-      <div className="w-full px-7">
+      <div className="w-full px-7 mt-5">
         <div className="h-px bg-gray-200"></div>
         <h1 className='py-3 text-center text-[14px]'>
           The product is safe from any harmful ingredients!
         </h1>
-      </div>
-
-      {/* Similar Products Button */}
-      <div className="flex justify-center mb-6">
-        <button className="text-blue-500 cursor-pointer text-[14px]">
-          Similar Products
-        </button>
       </div>
     </div>
   );

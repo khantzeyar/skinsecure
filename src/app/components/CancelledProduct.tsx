@@ -1,6 +1,5 @@
 /** 
  * This component is used to represent the cancelled products in the dataset.
- * - TO BE IMPLEMENTED: Similar products button
  * - The risk analysis button provides explanations regarding the high risk ingredients in the product.
 */
 import React, { useState } from 'react';
@@ -28,7 +27,7 @@ const CancelledProduct: React.FC<CancelledProductCard> = ({ product, ingredientR
 
   return (
     <>
-      <div className="flex flex-col justify-between items-center w-full max-w-[280px] h-77 
+      <div className="flex flex-col items-center w-full max-w-[280px] h-77 
       border shadow-md rounded border-gray-200 overflow-hidden
       will-change-transform will-change-width">
         {/* Header */}
@@ -43,7 +42,7 @@ const CancelledProduct: React.FC<CancelledProductCard> = ({ product, ingredientR
         </div>
 
         {/* Divider, Risk Ingredients & Help Icon */}
-        <div className="w-full px-7 flex-1 flex flex-col justify-center">
+        <div className="w-full px-7 flex flex-col justify-center mt-5">
           {/* Divider Line */}
           <div className="h-px bg-gray-200"></div>
           <h1 className='font-bold text-center text-[14px] py-2'>High Risk Ingredients</h1>
@@ -65,13 +64,6 @@ const CancelledProduct: React.FC<CancelledProductCard> = ({ product, ingredientR
               titleAccess="Show risk analysis"
             />
           </div>
-        </div>
-
-        {/* Similar Products Button */}
-        <div className="flex justify-center mb-6">
-          <button className="text-blue-500 cursor-pointer text-[14px]">
-            Similar Products
-          </button>
         </div>
       </div>
       
