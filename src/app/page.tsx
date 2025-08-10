@@ -20,30 +20,48 @@ export default function Home() {
   const [page, setPage] = useState(1);
   const itemsPerPage = 12;
 
-  const ingredients = [
-  "MERCURY",
-  "TRETINOIN",
-  "CLINDAMYCIN",
-  "HYDROQUINONE",
-  "STEROID",
-  "DIPHENHYDRAMINE",
-  "METHYL SALICYLATE",
-  "MENTHOL",
-  "ISOPROPYL ALCOHOL",
-  "AZELAIC ACID",
-  "MICONAZOLE",
-  "THYMOL",
-  "TRIMETHOPRIM",
-  "GRISEOFULVIN",
-  "SULFAMETHOXAZOLE",
-  "KETOCONAZOLE",
-  "CHLORAMPHENICOL",
-  "CHLORPHENIRAMINE",
-  "METRONIDAZOLE",
-  ];
 
+  const [ingredients, setIngredients] = useState<string[]>([]);
   const [showAll, setShowAll] = useState(false);
   const visibleIngredients = showAll ? ingredients : ingredients.slice(0, 5);
+
+  interface CancelledProduct {
+    notif_no: string;
+    product: string;
+    holder: string;
+    manufacturer: string;
+    substance_detected: string | null;
+  }
+
+  // Import Cancelled Products
+  useEffect(() => {
+    async function fetchCancelledProducts() {
+      try {
+        const res = await fetch("/api/cancelled-products");
+        if (!res.ok) throw new Error("Failed to fetch cancelled products");
+
+        const data: CancelledProduct[] = await res.json();
+
+        const uniqueIngredients = Array.from(
+          new Set(
+            data.flatMap((item) =>
+              item.substance_detected
+                ? item.substance_detected
+                    .split(",")
+                    .map((s) => s.trim().toUpperCase())
+                : []
+            )
+          )
+        ).sort();
+
+        setIngredients(uniqueIngredients);
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    fetchCancelledProducts();
+  }, []);
 
   // Generate products
   useEffect(() => {
