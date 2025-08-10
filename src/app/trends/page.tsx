@@ -32,38 +32,23 @@ const TrendsPage = () => {
   const [labels, setLabels] = useState<string[]>([]);
   const [frequencies, setFrequencies] = useState<number[]>([]);
 
-  // Import Cancelled Products
+  // Fetch top 5 ingredients from the table
   useEffect(() => {
-    async function fetchCancelledProducts() {
+    async function fetchIngredients() {
       try {
-        const res = await fetch("/api/cancelled-products");
-        if (!res.ok) throw new Error("Failed to fetch cancelled products");
+        const res = await fetch("/api/ingredients");
+        if (!res.ok) throw new Error("Failed to fetch ingredients");
 
-        const data: { substance_detected: string }[] = await res.json();
-        console.log("Cancelled products:", data);
-
-        // Flatten and normalize all ingredients
-        const allIngredients = data.flatMap((p) =>
-          p.substance_detected
-            .split(/,| AND | & /i) // split on commas, AND, or &
-            .map((s) => s.trim().toUpperCase())
-            .filter(Boolean)
-        );
-
-        // Count frequency of each ingredient
-        const counts = allIngredients.reduce((acc, ing) => {
-          acc[ing] = (acc[ing] || 0) + 1;
-          return acc;
-        }, {} as Record<string, number>);
+        const data: { ingredient: string; ingredient_count: number }[] = await res.json();
 
         // Sort by frequency (desc) and take the top 5
-        const sorted = Object.entries(counts)
-          .sort((a, b) => b[1] - a[1])
+        const sorted = data
+          .sort((a, b) => b.ingredient_count - a.ingredient_count)
           .slice(0, 5);
 
-        // Reverse order so Ingredient 1 is the right most on the chart
-        const topLabels = sorted.map(([name]) => name).reverse();
-        const topFrequencies = sorted.map(([, count]) => count).reverse();
+        // Reverse order so Ingredient 1 is the rightmost on the chart
+        const topLabels = sorted.map((row) => row.ingredient).reverse();
+        const topFrequencies = sorted.map((row) => row.ingredient_count).reverse();
 
         setLabels(topLabels);
         setFrequencies(topFrequencies);
@@ -72,7 +57,7 @@ const TrendsPage = () => {
       }
     }
 
-    fetchCancelledProducts();
+    fetchIngredients();
   }, []);
 
   // Bar Chart information
