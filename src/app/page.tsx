@@ -173,6 +173,11 @@ export default function Home() {
     setPage(1);
   };
 
+  // Reset page when filters change
+  useEffect(() => {
+    setPage(1);
+  }, [showApproved, showCancelled, searchTerm, selectedIngredients]);
+
   return (
     <div className="w-full flex flex-row gap-6 mt-38">
       {/* Filters Card */}
