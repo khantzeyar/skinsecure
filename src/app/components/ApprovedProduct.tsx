@@ -24,7 +24,7 @@ const ApprovedProduct: React.FC<ApprovedProductCard> = ({ product }) => {
       </div>
 
       {/* Middle content - Product Info */}
-      <div className="flex flex-col justify-center items-center h-[120px] text-center px-6 overflow-hidden">
+      <div className="flex flex-col justify-center items-center min-h-[120px] text-center px-6">
         <h1 className='font-bold'>{product.product_name}</h1>
         <h1 className='font-normal text-[14px] py-2'>Notif No. - {product.notif_no}</h1>
       </div>
