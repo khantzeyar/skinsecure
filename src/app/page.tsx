@@ -15,6 +15,7 @@ import SearchOff from '@mui/icons-material/SearchOff';
 import FilterAlt from '@mui/icons-material/FilterAlt';
 import KeyboardArrowDown from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUp from '@mui/icons-material/KeyboardArrowUp';
+import CircularProgress from '@mui/material/CircularProgress';
 
 export default function Home() {
   const [page, setPage] = useState(1);
@@ -42,6 +43,7 @@ export default function Home() {
   }
 
   const [allProducts, setAllProducts] = useState<UnifiedProduct[]>([]);
+  const [loading, setLoading] = useState(true);
 
   // Fetch and combine products
   useEffect(() => {
@@ -113,6 +115,8 @@ export default function Home() {
         setIngredientRisks(riskMap);
       } catch (err) {
         console.error(err);
+      } finally {
+        setLoading(false);
       }
     }
     fetchProductsAndRisks();
@@ -268,46 +272,53 @@ export default function Home() {
 
       {/* Product Grid*/}
       <div className="flex flex-col items-center flex-1 mr-6">
-        {currentProducts.length === 0 ? (
-          <div className="w-full flex flex-col items-center text-gray-500 py-20 text-lg">
-            <SearchOff sx={{ fontSize: 60 }} className="mb-4" />
-            No products found.
-          </div>
-        ) : (
-          <>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {currentProducts.map((product) =>
-                product.status === "approved" ? (
-                  <ApprovedProduct
-                    key={product.notif_no}
-                    product={{
-                      notif_no: product.notif_no,
-                      product_name: product.product_name,
-                    }}
-                  />
-                ) : (
-                  <CancelledProduct
-                    key={product.notif_no}
-                    product={{
-                      notif_no: product.notif_no,
-                      product_name: product.product_name,
-                      substance_detected: product.ingredients ? product.ingredients.join(", ") : null,
-                    }}
-                    ingredientRisks={ingredientRisks}
-                  />
-                )
-              )}
+        <div className="flex flex-col justify-between items-center w-full min-h-[600px]">
+          {loading ? (
+            <div className="w-full flex flex-col items-center text-gray-500 py-20 text-lg">
+              <CircularProgress className="mb-4" />
+              Loading Products...
             </div>
-            <Pagination
-              className="py-6"
-              count={Math.ceil(filteredProducts.length / itemsPerPage)}
-              shape="rounded"
-              size="large"
-              page={page}
-              onChange={handleChange}
-            />
-          </>
-        )}
+          ) : currentProducts.length === 0 ? (
+            <div className="w-full flex flex-col items-center text-gray-500 py-20 text-lg">
+              <SearchOff sx={{ fontSize: 60 }} className="mb-4" />
+              No products found.
+            </div>
+          ) : (
+            <>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 w-full flex-1">
+                {currentProducts.map((product) =>
+                  product.status === "approved" ? (
+                    <ApprovedProduct
+                      key={product.notif_no}
+                      product={{
+                        notif_no: product.notif_no,
+                        product_name: product.product_name,
+                      }}
+                    />
+                  ) : (
+                    <CancelledProduct
+                      key={product.notif_no}
+                      product={{
+                        notif_no: product.notif_no,
+                        product_name: product.product_name,
+                        substance_detected: product.ingredients ? product.ingredients.join(", ") : null,
+                      }}
+                      ingredientRisks={ingredientRisks}
+                    />
+                  )
+                )}
+              </div>
+              <Pagination
+                className="py-6"
+                count={Math.ceil(filteredProducts.length / itemsPerPage)}
+                shape="rounded"
+                size="large"
+                page={page}
+                onChange={handleChange}
+              />
+            </>
+          )}
+        </div>
       </div>
     </div>
   );
