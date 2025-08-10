@@ -1,7 +1,7 @@
 /** 
  * This component is used to represent the cancelled products in the dataset.
  * - TO BE IMPLEMENTED: Similar products button
- * - TO BE IMPLEMENTED: Risk analysis button (?)
+ * - The risk analysis button provides explanations regarding the high risk ingredients in the product.
 */
 import React, { useState } from 'react';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
@@ -13,9 +13,10 @@ interface CancelledProductCard {
     product_name: string;
     substance_detected: string | null;
   };
+  ingredientRisks: Record<string, string>;
 }
 
-const CancelledProduct: React.FC<CancelledProductCard> = ({ product }) => {
+const CancelledProduct: React.FC<CancelledProductCard> = ({ product, ingredientRisks }) => {
   const [showOverlay, setShowOverlay] = useState(false);
 
   // Prepare ingredients array
@@ -73,14 +74,21 @@ const CancelledProduct: React.FC<CancelledProductCard> = ({ product }) => {
           </button>
         </div>
       </div>
-
+      
+      {/* Display the overlay with the associated ingredient risks. */}
       {showOverlay && (
         <Overlay onClose={() => setShowOverlay(false)}>
-          {/* Here you can display risk explanation, for now just show ingredients */}
           <div className="p-4">
-            <ul className="list-disc list-inside text-sm mx-5">
+            <ul className="list-disc list-inside text-sm mx-5 space-y-2">
               {ingredients.length > 0 ? (
-                ingredients.map((ing, i) => <li key={i}>{ing}</li>)
+                ingredients.map((ing, i) => (
+                  <li key={i}>
+                    <span className="font-bold">{ing}:</span>
+                    {ingredientRisks[ing] && (
+                      <span className="ml-2 text-gray-700"> {ingredientRisks[ing]}</span>
+                    )}
+                  </li>
+                ))
               ) : (
                 <li>No high risk ingredients</li>
               )}

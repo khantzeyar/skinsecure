@@ -29,6 +29,9 @@ export default function Home() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedIngredients, setSelectedIngredients] = useState<string[]>([]);
 
+  // New state for ingredient risks
+  const [ingredientRisks, setIngredientRisks] = useState<Record<string, string>>({});
+
   // Unified product type
   interface UnifiedProduct {
     notif_no: string;
@@ -42,7 +45,7 @@ export default function Home() {
 
   // Fetch and combine products
   useEffect(() => {
-    async function fetchProducts() {
+    async function fetchProductsAndRisks() {
       try {
         // Fetch approved products
         const approvedRes = await fetch("/api/approved-products");
@@ -96,11 +99,23 @@ export default function Home() {
 
         // Combine both arrays
         setAllProducts([...approvedProducts, ...cancelledProducts]);
+
+        // Fetch ingredient risks
+        const risksRes = await fetch("/api/ingredients");
+        if (!risksRes.ok) throw new Error("Failed to fetch ingredient risks");
+        const risksData: { ingredient: string; risk_explanation: string }[] = await risksRes.json();
+
+        // Build a mapping: INGREDIENT (UPPERCASE) -> risk_explanation
+        const riskMap: Record<string, string> = {};
+        for (const row of risksData) {
+          riskMap[row.ingredient.toUpperCase()] = row.risk_explanation;
+        }
+        setIngredientRisks(riskMap);
       } catch (err) {
         console.error(err);
       }
     }
-    fetchProducts();
+    fetchProductsAndRisks();
   }, []);
 
   // Filtering logic
@@ -273,6 +288,7 @@ export default function Home() {
                       product_name: product.product_name,
                       substance_detected: product.ingredients ? product.ingredients.join(", ") : null,
                     }}
+                    ingredientRisks={ingredientRisks}
                   />
                 )
               )}
