@@ -47,7 +47,7 @@ export default function Home() {
             data.flatMap((item) =>
               item.substance_detected
                 ? item.substance_detected
-                    .split(",")
+                    .split(/,| AND | & /i) // split on commas or AND or &
                     .map((s) => s.trim().toUpperCase())
                 : []
             )
