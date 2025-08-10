@@ -16,14 +16,36 @@ import KeyboardArrowDown from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUp from '@mui/icons-material/KeyboardArrowUp';
 
 export default function Home() {
-  const [products, setProducts] = useState<{ id: number; type: string }[]>([]);
+  
   const [page, setPage] = useState(1);
   const itemsPerPage = 12;
-
 
   const [ingredients, setIngredients] = useState<string[]>([]);
   const [showAll, setShowAll] = useState(false);
   const visibleIngredients = showAll ? ingredients : ingredients.slice(0, 5);
+
+  const [approvedProducts, setApprovedProducts] = useState<ApprovedProductType[]>([]);
+
+  interface ApprovedProductType {
+    notif_no: string;
+    product: string;
+  }
+
+  // Import Approved Products
+  useEffect(() => {
+    async function fetchApprovedProducts() {
+      try {
+        const res = await fetch("/api/approved-products");
+        if (!res.ok) throw new Error("Failed to fetch approved products");
+
+        const data: ApprovedProductType[] = await res.json();
+        setApprovedProducts(data);
+      } catch (err) {
+        console.error(err);
+      }
+    }
+    fetchApprovedProducts();
+  }, []);
 
   interface CancelledProduct {
     notif_no: string;
@@ -32,7 +54,7 @@ export default function Home() {
     manufacturer: string;
     substance_detected: string | null;
   }
-
+  
   // Import Cancelled Products
   useEffect(() => {
     async function fetchCancelledProducts() {
@@ -63,22 +85,13 @@ export default function Home() {
     fetchCancelledProducts();
   }, []);
 
-  // Generate products
-  useEffect(() => {
-    const generated = Array.from({ length: 48 }, (_, index) => {
-      const isApproved = Math.random() > 0.5;
-      return { id: index, type: isApproved ? 'approved' : 'cancelled' };
-    });
-    setProducts(generated);
-  }, []);
-
   const handleChange = (_event: React.ChangeEvent<unknown>, value: number) => {
     setPage(value);
   };
 
   const startIndex = (page - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const currentProducts = products.slice(startIndex, endIndex);
+  const currentProducts = approvedProducts.slice(startIndex, endIndex);
 
   return (
     <div className="w-full flex flex-row gap-6 mt-38">
@@ -151,17 +164,19 @@ export default function Home() {
       {/* Product Grid*/}
       <div className="flex flex-col items-center flex-1 mr-6">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {currentProducts.map((product) =>
-            product.type === 'approved' ? (
-              <ApprovedProduct key={product.id} />
-            ) : (
-              <CancelledProduct key={product.id} />
-            )
-          )}
+          {currentProducts.map((product) => (
+            <ApprovedProduct 
+              key={product.notif_no} 
+              product={{
+                notif_no: product.notif_no,
+                product_name: product.product
+              }} 
+            />
+          ))}
         </div>
         <Pagination
           className="py-6"
-          count={Math.ceil(products.length / itemsPerPage)}
+          count={Math.ceil(approvedProducts.length / itemsPerPage)}
           shape="rounded"
           size="large"
           page={page}
