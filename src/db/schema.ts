@@ -1,4 +1,4 @@
-import { pgTable, varchar, date, text } from "drizzle-orm/pg-core";
+import { pgTable, varchar, date, text, integer} from "drizzle-orm/pg-core";
 
 export const productApprovedCsv = pgTable("product_approved_csv", {
   notif_no: varchar("notif_no", { length: 20 }).primaryKey(),
@@ -13,4 +13,10 @@ export const productCancelledCsv = pgTable("product_cancelled_csv", {
   holder: varchar("holder", { length: 255 }).notNull(),
   manufacturer: varchar("manufacturer", { length: 255 }).notNull(),
   substance_detected: text("substance_detected"), // can store multiple substances
+});
+
+export const ingredients = pgTable("ingredients", {
+  ingredient: varchar("ingredient", { length: 255 }).notNull().primaryKey(),
+  ingredient_count: integer("ingredient_count").notNull(),
+  risk_explanation: text("risk_explanation"), 
 });
