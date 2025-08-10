@@ -1,0 +1,1 @@
+ALTER TABLE "product_approved_csv" ADD COLUMN "product_type" varchar(64);

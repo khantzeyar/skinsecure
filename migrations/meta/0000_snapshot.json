@@ -1,0 +1,416 @@
+{
+  "id": "07016814-567b-49f0-8191-ba3f647e86db",
+  "prevId": "00000000-0000-0000-0000-000000000000",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "public.harmful_substance": {
+      "name": "harmful_substance",
+      "schema": "",
+      "columns": {
+        "harmful_substance_id": {
+          "name": "harmful_substance_id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "product_notif_id": {
+          "name": "product_notif_id",
+          "type": "varchar(20)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "substance_id": {
+          "name": "substance_id",
+          "type": "serial",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "harmful_substance_product_notif_id_product_product_notif_id_fk": {
+          "name": "harmful_substance_product_notif_id_product_product_notif_id_fk",
+          "tableFrom": "harmful_substance",
+          "tableTo": "product",
+          "columnsFrom": [
+            "product_notif_id"
+          ],
+          "columnsTo": [
+            "product_notif_id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "harmful_substance_substance_id_substance_substance_id_fk": {
+          "name": "harmful_substance_substance_id_substance_substance_id_fk",
+          "tableFrom": "harmful_substance",
+          "tableTo": "substance",
+          "columnsFrom": [
+            "substance_id"
+          ],
+          "columnsTo": [
+            "substance_id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.holder": {
+      "name": "holder",
+      "schema": "",
+      "columns": {
+        "holder_id": {
+          "name": "holder_id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "holder_name": {
+          "name": "holder_name",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "holder_holder_name_unique": {
+          "name": "holder_holder_name_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "holder_name"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.manufacturer": {
+      "name": "manufacturer",
+      "schema": "",
+      "columns": {
+        "manufacturer_id": {
+          "name": "manufacturer_id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "manufacturer_name": {
+          "name": "manufacturer_name",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "manufacturer_manufacturer_name_unique": {
+          "name": "manufacturer_manufacturer_name_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "manufacturer_name"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.product_approved": {
+      "name": "product_approved",
+      "schema": "",
+      "columns": {
+        "product_notif_id": {
+          "name": "product_notif_id",
+          "type": "varchar(20)",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "product_name": {
+          "name": "product_name",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "holder_id": {
+          "name": "holder_id",
+          "type": "serial",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "product_type": {
+          "name": "product_type",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "product_notif_date": {
+          "name": "product_notif_date",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "product_approved_product_notif_id_product_product_notif_id_fk": {
+          "name": "product_approved_product_notif_id_product_product_notif_id_fk",
+          "tableFrom": "product_approved",
+          "tableTo": "product",
+          "columnsFrom": [
+            "product_notif_id"
+          ],
+          "columnsTo": [
+            "product_notif_id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "product_approved_holder_id_holder_holder_id_fk": {
+          "name": "product_approved_holder_id_holder_holder_id_fk",
+          "tableFrom": "product_approved",
+          "tableTo": "holder",
+          "columnsFrom": [
+            "holder_id"
+          ],
+          "columnsTo": [
+            "holder_id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "product_approved_product_name_unique": {
+          "name": "product_approved_product_name_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "product_name"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.product_cancelled": {
+      "name": "product_cancelled",
+      "schema": "",
+      "columns": {
+        "product_notif_id": {
+          "name": "product_notif_id",
+          "type": "varchar(20)",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "product_name": {
+          "name": "product_name",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "holder_id": {
+          "name": "holder_id",
+          "type": "serial",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "product_type": {
+          "name": "product_type",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "manufacturer_id": {
+          "name": "manufacturer_id",
+          "type": "serial",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "product_cancelled_product_notif_id_product_product_notif_id_fk": {
+          "name": "product_cancelled_product_notif_id_product_product_notif_id_fk",
+          "tableFrom": "product_cancelled",
+          "tableTo": "product",
+          "columnsFrom": [
+            "product_notif_id"
+          ],
+          "columnsTo": [
+            "product_notif_id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "product_cancelled_holder_id_holder_holder_id_fk": {
+          "name": "product_cancelled_holder_id_holder_holder_id_fk",
+          "tableFrom": "product_cancelled",
+          "tableTo": "holder",
+          "columnsFrom": [
+            "holder_id"
+          ],
+          "columnsTo": [
+            "holder_id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "product_cancelled_manufacturer_id_manufacturer_manufacturer_id_fk": {
+          "name": "product_cancelled_manufacturer_id_manufacturer_manufacturer_id_fk",
+          "tableFrom": "product_cancelled",
+          "tableTo": "manufacturer",
+          "columnsFrom": [
+            "manufacturer_id"
+          ],
+          "columnsTo": [
+            "manufacturer_id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "product_cancelled_product_name_unique": {
+          "name": "product_cancelled_product_name_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "product_name"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.product": {
+      "name": "product",
+      "schema": "",
+      "columns": {
+        "product_notif_id": {
+          "name": "product_notif_id",
+          "type": "varchar(20)",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "product_name": {
+          "name": "product_name",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "holder_id": {
+          "name": "holder_id",
+          "type": "serial",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "product_type": {
+          "name": "product_type",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "product_status": {
+          "name": "product_status",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "product_holder_id_holder_holder_id_fk": {
+          "name": "product_holder_id_holder_holder_id_fk",
+          "tableFrom": "product",
+          "tableTo": "holder",
+          "columnsFrom": [
+            "holder_id"
+          ],
+          "columnsTo": [
+            "holder_id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "product_product_name_unique": {
+          "name": "product_product_name_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "product_name"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.substance": {
+      "name": "substance",
+      "schema": "",
+      "columns": {
+        "substance_id": {
+          "name": "substance_id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "substance_name": {
+          "name": "substance_name",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "substance_effect": {
+          "name": "substance_effect",
+          "type": "varchar(500)",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "substance_substance_name_unique": {
+          "name": "substance_substance_name_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "substance_name"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {},
+  "schemas": {},
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "views": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}
