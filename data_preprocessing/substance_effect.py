@@ -6,13 +6,16 @@ import pandas as pd
 # Load CSV file
 df = pd.read_csv("cosmetic_notifications_cancelled.csv")
 
+# Handle the Tretnon / Tretinoin inconsistency
+df["substance_detected"] = df["substance_detected"].str.replace("TRETNON", "TRETINOIN")
+
+# Write dataframe to CSV
+df.to_csv("cosmetic_notifications_cancelled.csv", index = False)
+
 # Extract all substances from the "substance_detected" column
 substances = df["substance_detected"].str.replace(" AND ", ",").str.split(",")
 substances = substances.explode()
 substances = substances.str.strip().str.title()
-
-# Handle the Tretnon / Tretinoin inconsistency
-substances = substances.replace("Tretnon", "Tretinoin")
 
 # Get the unique list of substances
 unique_substances = substances.unique()
