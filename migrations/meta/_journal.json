@@ -29,6 +29,34 @@
       "when": 1754848199062,
       "tag": "0003_pale_kylun",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1754879093423,
+      "tag": "0004_magenta_patch",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1754880116243,
+      "tag": "0005_nostalgic_cassandra_nova",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1754880801815,
+      "tag": "0006_illegal_mentallo",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1754880912791,
+      "tag": "0007_ancient_mongu",
+      "breakpoints": true
     }
   ]
 }
