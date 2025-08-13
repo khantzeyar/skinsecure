@@ -18,28 +18,33 @@ const Navbar = () => {
   return (
     <nav className='top-0 w-full fixed flex items-center justify-between z-50
       py-3 px-8 border-b border-gray-300 bg-white'>
-          {/* Logo */}
-          <Image src="/skinsecure.svg" alt="Logo" 
+      {/* Logo and Tagline */}
+      <div className="flex items-center gap-6">
+        <Image src="/skinsecure.svg" alt="Logo" 
           width={430} height={147} style={{ height: '100px', width: 'auto'}}/>
-          {/* Navigation Links */}
-          <ul className='flex text-lg mr-10'> 
-              <li>
-                <Link href="/">
-                  <span className={`inline-block px-4 py-2 rounded w-32 text-center
-                    ${pathname === '/' ? 'bg-black text-white' : 'text-black'}`}>
-                    Products
-                  </span>
-                </Link>
-              </li>
-              <li>
-                <Link href="/trends">
-                  <span className={`inline-block px-4 py-2 rounded w-32 text-center
-                    ${pathname === '/trends' ? 'bg-black text-white' : 'text-black'}`}>
-                    Trends
-                  </span>
-                </Link>
-              </li>
-          </ul>
+        <span className="text-1xl  text-gray-700 whitespace-nowrap font-extralight italic">
+          Empowering Informed Choices
+        </span>
+      </div>
+      {/* Navigation Links */}
+      <ul className='flex text-lg mr-10'> 
+          <li>
+            <Link href="/">
+              <span className={`inline-block px-4 py-2 rounded w-32 text-center
+                ${pathname === '/' ? 'bg-black text-white' : 'text-black'}`}>
+                Products
+              </span>
+            </Link>
+          </li>
+          <li>
+            <Link href="/trends">
+              <span className={`inline-block px-4 py-2 rounded w-32 text-center
+                ${pathname === '/trends' ? 'bg-black text-white' : 'text-black'}`}>
+                Trends
+              </span>
+            </Link>
+          </li>
+      </ul>
     </nav>
   )
 }

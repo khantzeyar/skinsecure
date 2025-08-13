@@ -6,7 +6,7 @@
 */
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import ApprovedProduct from './components/ApprovedProduct';
 import CancelledProduct from './components/CancelledProduct';
 import Pagination from '@mui/material/Pagination';
@@ -33,74 +33,64 @@ export default function Home() {
   // New state for ingredient risks
   const [ingredientRisks, setIngredientRisks] = useState<Record<string, string>>({});
 
-  // Unified product type
+  // Unified product type for combined_products
   interface UnifiedProduct {
     notif_no: string;
-    product_name: string;
+    product: string;
+    company: string;
+    substance_detected: string | null;
     status: "approved" | "cancelled";
-    manufacturer?: string;
     ingredients?: string[];
   }
 
   const [allProducts, setAllProducts] = useState<UnifiedProduct[]>([]);
   const [loading, setLoading] = useState(true);
+  const [totalProducts, setTotalProducts] = useState(0);
 
   // Fetch and combine products
   useEffect(() => {
     async function fetchProductsAndRisks() {
+      setLoading(true);
       try {
-        // Fetch approved products
-        const approvedRes = await fetch("/api/approved-products");
-        if (!approvedRes.ok) throw new Error("Failed to fetch approved products");
-        const approvedData: { notif_no: string; product: string }[] = await approvedRes.json();
+        // Build query params
+        const params = new URLSearchParams();
+        params.set("page", page.toString());
+        params.set("pageSize", itemsPerPage.toString());
+        if (showApproved && !showCancelled) params.set("status", "approved");
+        if (showCancelled && !showApproved) params.set("status", "cancelled");
+        if (searchTerm.trim()) params.set("search", searchTerm.trim());
+        if (selectedIngredients.length > 0) {
+          params.set("ingredient", selectedIngredients.join(","));
+          params.set("status", "cancelled");
+        }
 
-        // Fetch cancelled products
-        const cancelledRes = await fetch("/api/cancelled-products");
-        if (!cancelledRes.ok) throw new Error("Failed to fetch cancelled products");
-        const cancelledData: {
-          notif_no: string;
-          product: string;
-          holder: string;
-          manufacturer: string;
-          substance_detected: string | null;
-        }[] = await cancelledRes.json();
+        // Fetch paginated, filtered products
+        const combinedRes = await fetch(`/api/combined-products?${params.toString()}`);
+        if (!combinedRes.ok) throw new Error("Failed to fetch combined products");
+        const { products: combinedData, total } = await combinedRes.json();
 
-        // Extract unique ingredients for filter
-        const uniqueIngredients = Array.from(
-          new Set(
-            cancelledData.flatMap((item) =>
-              item.substance_detected
-                ? item.substance_detected
-                    .split(/,| AND | & /i)
-                    .map((s) => s.trim().toUpperCase())
-                : []
-            )
-          )
-        ).sort();
-        setIngredients(uniqueIngredients);
+        // Determine status and parse ingredients
+        const products: UnifiedProduct[] = combinedData.map((item: UnifiedProduct) => {
+          const isCancelled = !!item.substance_detected && item.substance_detected.trim() !== "";
+          return {
+            ...item,
+            status: isCancelled ? "cancelled" : "approved",
+            ingredients: isCancelled
+              ? item.substance_detected
+                  ?.split(/,| AND | & /i)
+                  .map((s: string) => s.trim().toUpperCase())
+              : [],
+          };
+        });
 
-        // Map approved products
-        const approvedProducts: UnifiedProduct[] = approvedData.map((item) => ({
-          notif_no: item.notif_no,
-          product_name: item.product,
-          status: "approved",
-        }));
+        setAllProducts(products);
+        setTotalProducts(total);
 
-        // Map cancelled products (parse ingredients)
-        const cancelledProducts: UnifiedProduct[] = cancelledData.map((item) => ({
-          notif_no: item.notif_no,
-          product_name: item.product,
-          status: "cancelled",
-          manufacturer: item.manufacturer,
-          ingredients: item.substance_detected
-            ? item.substance_detected
-                .split(/,| AND | & /i)
-                .map((s) => s.trim().toUpperCase())
-            : [],
-        }));
-
-        // Combine both arrays
-        setAllProducts([...approvedProducts, ...cancelledProducts]);
+        // Fetch ingredient list from /api/ingredients
+        const ingredientsRes = await fetch("/api/ingredients");
+        if (!ingredientsRes.ok) throw new Error("Failed to fetch ingredients");
+        const ingredientsData: { ingredient: string }[] = await ingredientsRes.json();
+        setIngredients(ingredientsData.map(row => row.ingredient));
 
         // Fetch ingredient risks
         const risksRes = await fetch("/api/ingredients");
@@ -120,53 +110,11 @@ export default function Home() {
       }
     }
     fetchProductsAndRisks();
-  }, []);
-
-  // Filtering logic
-  let filteredProducts = allProducts;
-
-  // Filter by approval status
-  if (showApproved || showCancelled) {
-    filteredProducts = filteredProducts.filter((product) =>
-      (showApproved && product.status === "approved") ||
-      (showCancelled && product.status === "cancelled")
-    );
-  }
-
-  // Filter by search term
-  if (searchTerm.trim() !== "") {
-    const lower = searchTerm.trim().toLowerCase();
-    filteredProducts = filteredProducts.filter(
-      (product) =>
-        product.product_name.toLowerCase().includes(lower) ||
-        product.notif_no.toLowerCase().includes(lower)
-    );
-  }
-
-  // Filter by selected ingredients
-  if (selectedIngredients.length > 0) {
-    filteredProducts = filteredProducts.filter(
-      (product) =>
-        product.status === "cancelled" &&
-        product.ingredients &&
-        product.ingredients.some((ing) => selectedIngredients.includes(ing))
-    );
-  } else if (showApproved || showCancelled) {
-    // Filter by approval status if no ingredients are selected
-    filteredProducts = filteredProducts.filter((product) =>
-      (showApproved && product.status === "approved") ||
-      (showCancelled && product.status === "cancelled")
-    );
-  }
+  }, [page, itemsPerPage, showApproved, showCancelled, searchTerm, selectedIngredients]);
 
   const handleChange = (_event: React.ChangeEvent<unknown>, value: number) => {
     setPage(value);
   };
-
-  // Pagination
-  const startIndex = (page - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const currentProducts = filteredProducts.slice(startIndex, endIndex);
 
   const handleIngredientChange = (ingredient: string) => {
     setSelectedIngredients((prev) =>
@@ -278,7 +226,8 @@ export default function Home() {
               <CircularProgress className="mb-4" />
               Loading Products...
             </div>
-          ) : currentProducts.length === 0 ? (
+            // If the product length is zero OR Approved and an ingredient are selected -> Show no products
+          ) : allProducts.length === 0 || (selectedIngredients.length > 0 && showApproved && !showCancelled) ? (
             <div className="w-full flex flex-col items-center text-gray-500 py-20 text-lg">
               <SearchOff sx={{ fontSize: 60 }} className="mb-4" />
               No products found.
@@ -286,13 +235,13 @@ export default function Home() {
           ) : (
             <>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 w-full flex-1">
-                {currentProducts.map((product) =>
+                {allProducts.map((product) =>
                   product.status === "approved" ? (
                     <ApprovedProduct
                       key={product.notif_no}
                       product={{
                         notif_no: product.notif_no,
-                        product_name: product.product_name,
+                        product_name: product.product,
                       }}
                     />
                   ) : (
@@ -300,7 +249,7 @@ export default function Home() {
                       key={product.notif_no}
                       product={{
                         notif_no: product.notif_no,
-                        product_name: product.product_name,
+                        product_name: product.product,
                         substance_detected: product.ingredients ? product.ingredients.join(", ") : null,
                       }}
                       ingredientRisks={ingredientRisks}
@@ -310,7 +259,7 @@ export default function Home() {
               </div>
               <Pagination
                 className="py-6"
-                count={Math.ceil(filteredProducts.length / itemsPerPage)}
+                count={Math.ceil(totalProducts / itemsPerPage)}
                 shape="rounded"
                 size="large"
                 page={page}
