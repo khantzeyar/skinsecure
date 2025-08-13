@@ -33,12 +33,13 @@ export default function Home() {
   // New state for ingredient risks
   const [ingredientRisks, setIngredientRisks] = useState<Record<string, string>>({});
 
-  // Unified product type
+  // Unified product type for combined_products
   interface UnifiedProduct {
     notif_no: string;
-    product_name: string;
+    product: string;
+    company: string;
+    substance_detected: string | null;
     status: "approved" | "cancelled";
-    manufacturer?: string;
     ingredients?: string[];
   }
 
@@ -49,58 +50,37 @@ export default function Home() {
   useEffect(() => {
     async function fetchProductsAndRisks() {
       try {
-        // Fetch approved products
-        const approvedRes = await fetch("/api/approved-products");
-        if (!approvedRes.ok) throw new Error("Failed to fetch approved products");
-        const approvedData: { notif_no: string; product: string }[] = await approvedRes.json();
-
-        // Fetch cancelled products
-        const cancelledRes = await fetch("/api/cancelled-products");
-        if (!cancelledRes.ok) throw new Error("Failed to fetch cancelled products");
-        const cancelledData: {
+        // Fetch combined products
+        const combinedRes = await fetch("/api/combined-products");
+        if (!combinedRes.ok) throw new Error("Failed to fetch combined products");
+        const combinedData: {
           notif_no: string;
           product: string;
-          holder: string;
-          manufacturer: string;
+          company: string;
           substance_detected: string | null;
-        }[] = await cancelledRes.json();
+        }[] = await combinedRes.json();
 
-        // Extract unique ingredients for filter
-        const uniqueIngredients = Array.from(
-          new Set(
-            cancelledData.flatMap((item) =>
-              item.substance_detected
-                ? item.substance_detected
-                    .split(/,| AND | & /i)
-                    .map((s) => s.trim().toUpperCase())
-                : []
-            )
-          )
-        ).sort();
-        setIngredients(uniqueIngredients);
+        // Determine status and parse ingredients
+        const products: UnifiedProduct[] = combinedData.map((item) => {
+          const isCancelled = !!item.substance_detected && item.substance_detected.trim() !== "";
+          return {
+            ...item,
+            status: isCancelled ? "cancelled" : "approved",
+            ingredients: isCancelled
+              ? item.substance_detected
+                  ?.split(/,| AND | & /i)
+                  .map((s) => s.trim().toUpperCase())
+              : [],
+          };
+        });
 
-        // Map approved products
-        const approvedProducts: UnifiedProduct[] = approvedData.map((item) => ({
-          notif_no: item.notif_no,
-          product_name: item.product,
-          status: "approved",
-        }));
+        setAllProducts(products);
 
-        // Map cancelled products (parse ingredients)
-        const cancelledProducts: UnifiedProduct[] = cancelledData.map((item) => ({
-          notif_no: item.notif_no,
-          product_name: item.product,
-          status: "cancelled",
-          manufacturer: item.manufacturer,
-          ingredients: item.substance_detected
-            ? item.substance_detected
-                .split(/,| AND | & /i)
-                .map((s) => s.trim().toUpperCase())
-            : [],
-        }));
-
-        // Combine both arrays
-        setAllProducts([...approvedProducts, ...cancelledProducts]);
+        // Fetch ingredient list from /api/ingredients
+        const ingredientsRes = await fetch("/api/ingredients");
+        if (!ingredientsRes.ok) throw new Error("Failed to fetch ingredients");
+        const ingredientsData: { ingredient: string }[] = await ingredientsRes.json();
+        setIngredients(ingredientsData.map(row => row.ingredient));
 
         // Fetch ingredient risks
         const risksRes = await fetch("/api/ingredients");
@@ -138,7 +118,7 @@ export default function Home() {
     const lower = searchTerm.trim().toLowerCase();
     filteredProducts = filteredProducts.filter(
       (product) =>
-        product.product_name.toLowerCase().includes(lower) ||
+        product.product.toLowerCase().includes(lower) ||
         product.notif_no.toLowerCase().includes(lower)
     );
   }
@@ -292,7 +272,7 @@ export default function Home() {
                       key={product.notif_no}
                       product={{
                         notif_no: product.notif_no,
-                        product_name: product.product_name,
+                        product_name: product.product,
                       }}
                     />
                   ) : (
@@ -300,7 +280,7 @@ export default function Home() {
                       key={product.notif_no}
                       product={{
                         notif_no: product.notif_no,
-                        product_name: product.product_name,
+                        product_name: product.product,
                         substance_detected: product.ingredients ? product.ingredients.join(", ") : null,
                       }}
                       ingredientRisks={ingredientRisks}

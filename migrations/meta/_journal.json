@@ -29,6 +29,13 @@
       "when": 1754848199062,
       "tag": "0003_pale_kylun",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1755055504076,
+      "tag": "0004_wakeful_stellaris",
+      "breakpoints": true
     }
   ]
 }
