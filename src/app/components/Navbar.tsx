@@ -22,7 +22,7 @@ const Navbar = () => {
       <div className="flex items-center gap-6">
         <Image src="/skinsecure.svg" alt="Logo" 
           width={430} height={147} style={{ height: '100px', width: 'auto'}}/>
-        <span className="text-1xl  text-gray-700 whitespace-nowrap font-extralight italic">
+        <span className="hidden lg:inline text-gray-700 whitespace-nowrap font-extralight italic">
           Empowering Informed Choices
         </span>
       </div>
