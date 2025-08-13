@@ -6,7 +6,7 @@
 */
 "use client";
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect} from 'react';
 import ApprovedProduct from './components/ApprovedProduct';
 import CancelledProduct from './components/CancelledProduct';
 import Pagination from '@mui/material/Pagination';
@@ -16,6 +16,7 @@ import FilterAlt from '@mui/icons-material/FilterAlt';
 import KeyboardArrowDown from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUp from '@mui/icons-material/KeyboardArrowUp';
 import CircularProgress from '@mui/material/CircularProgress';
+import Loading from './components/Loading';
 
 export default function Home() {
   const [page, setPage] = useState(1);
@@ -222,10 +223,7 @@ export default function Home() {
       <div className="flex flex-col items-center flex-1 mr-6">
         <div className="flex flex-col justify-between items-center w-full min-h-[600px]">
           {loading ? (
-            <div className="w-full flex flex-col items-center text-gray-500 py-20 text-lg">
-              <CircularProgress className="mb-4" />
-              Loading Products...
-            </div>
+            <Loading></Loading>
             // If the product length is zero OR Approved and an ingredient are selected -> Show no products
           ) : allProducts.length === 0 || (selectedIngredients.length > 0 && showApproved && !showCancelled) ? (
             <div className="w-full flex flex-col items-center text-gray-500 py-20 text-lg">
