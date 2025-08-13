@@ -37,13 +37,15 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${roboto.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${roboto.variable} antialiased min-h-screen flex flex-col`}
       >
         <AppRouterCacheProvider>
           <ThemeProvider theme={theme}>
-            <Navbar></Navbar>
-            {children}
-            <BottomBar></BottomBar>
+            <Navbar />
+            <main className="flex-1 flex flex-col">
+              {children}
+            </main>
+            <BottomBar />
           </ThemeProvider>
         </AppRouterCacheProvider>
       </body>
