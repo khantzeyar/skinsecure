@@ -68,6 +68,9 @@ const Overlay: React.FC<OverlayProps> = ({ onClose, children }) => {
             Got It
           </button>
         </div>
+        <p className="text-xs text-gray-500 text-center mt-2 mb-1">
+          Written and verified by our developers!
+        </p>
       </div>
     </div>
   );

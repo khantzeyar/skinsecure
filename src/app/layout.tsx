@@ -5,6 +5,7 @@ import { ThemeProvider } from '@mui/material/styles';
 import "./globals.css";
 import Navbar from "./components/Navbar";
 import theme from "../../theme";
+import BottomBar from "./components/BottomBar";
 
 const roboto = Roboto({
   weight: ['300', '400', '500', '700'],
@@ -42,6 +43,7 @@ export default function RootLayout({
           <ThemeProvider theme={theme}>
             <Navbar></Navbar>
             {children}
+            <BottomBar></BottomBar>
           </ThemeProvider>
         </AppRouterCacheProvider>
       </body>
