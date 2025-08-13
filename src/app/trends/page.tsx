@@ -75,7 +75,7 @@ const TrendsPage = () => {
 
   return (
     <div className='w-full flex flex-col items-center justify-center mt-38'>
-      <h1 className='font-bold text-3xl mb-8'>Frequency of the Most Banned Substances</h1>
+      <h1 className='font-bold text-3xl mb-8'>Frequency of the Most Banned Ingredients</h1>
       <div className="flex flex-row items-center gap-12">
         <div className="w-[900px] h-[400px]">
           <Bar data={data} options={{ responsive: true, maintainAspectRatio: false }} />
